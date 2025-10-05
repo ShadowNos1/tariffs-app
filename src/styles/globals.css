@@ -1,0 +1,411 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #232829;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  background-color: #1D5B43;
+  padding: 15px;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
+}
+
+.timer {
+  font-size: 1.5rem;
+  color: #FFBB00;
+}
+
+.timer.warning {
+  color: red;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,50%,100% {opacity:1;}
+  25%,75% {opacity:0;}
+}
+
+.content {
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.image-section {
+  flex: 1;
+  max-width: 400px;
+  border-radius: 15px;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-section img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 15px;
+}
+.right-side {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tariffs {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tariff-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.tariff-card {
+  background: #313637;
+  border-radius: 40px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease, border 0.3s ease;
+  max-height: 240px;
+  max-width: 335px;
+  border: 2px solid #484D4E;
+}
+
+.tariff-card.selected {
+  border: 2px solid #FDB056;
+  transform: scale(0.95);
+}
+
+.tariff-card:hover {
+  transform: translateY(-5px);
+}
+
+.discount {
+  position: absolute;
+  top: 0px;
+  left: 30px;
+  background: #FD5656 !important;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center !important;
+  font-size: 0.9rem;
+  height: 29px;
+  width: 50px;
+  padding-top: 10px;
+}
+.forever {
+  background: #FD5656 !important;
+}
+
+.hit-label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #FDB056;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.price {
+  font-size: clamp(34px, 2.5vw, 50px);
+  font-weight: bold;
+  color: white;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #919191;
+  font-size: clamp(15px, 2.5vw, 24px);
+  padding-left: 40px;
+}
+
+.name {
+  margin-top: 25px;
+  font-size: clamp(18px, 2.5vw, 26px);
+  letter-spacing: 2px;
+}
+
+.benefit-text {
+  display: flex !important;
+  justify-content: space-between;
+  background: #2D3233;
+  border-radius: 15px;
+  padding: 20px;
+  align-items: center;
+  text-align: right;
+  margin-top: 20px;
+  max-width: 450px;
+}
+.benefit-icon {
+  color: #FDB056;
+  font-weight: bold;
+  font-size: 1.7rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 30px;
+}
+.buy-text{
+  font-size: clamp(10px, 2.5vw, 14px);
+  color: #9B9B9B;
+  max-height: 748px;
+}
+.terms {
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+}
+.checkbox label {
+    position: relative;
+    padding-left: 30px; /* место для кастомного квадратика */
+    cursor: pointer;
+    display: inline-block;
+    line-height: 20px;
+    padding-top: 3px;
+}
+.checkbox input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  margin: 0;
+  z-index: 2; /* чтобы клик ловил именно input */
+}
+
+/* визуальная часть чекбокса */
+.checkbox label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 25px;
+  height: 25px;
+  border: 2px solid #606566;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* галочка */
+.checkbox input[type="checkbox"]:checked + label::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 10px;
+  height: 15px;
+  border: solid #FDB056;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.price-section {
+  display: flex;
+  flex-direction: column; /* чтобы шли сверху вниз */
+  align-items: center;    /* по центру */
+  margin-top: 10px;
+}
+
+.buy-button {
+  background: #FDB056;
+  color: #191E1F;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  max-width: 350px;
+  font-size: clamp(18px, 2.5vw, 20px);
+}
+
+.buy-button:hover {
+  border: 1px solid white;
+}
+
+.refund {
+  border: 2px, solid #484D4E;
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.refund-title {
+  font-weight: bold;
+  color: #81FE95;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  border: 1px solid #81FE95;
+  border-radius: 30px;
+  padding: 10px;
+  width: fit-content;
+}
+.forever-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* чтобы левый столбик был сверху */
+  gap: 20px;
+  padding-left: 10%;
+  border-radius: 34px;
+  max-height: 190px;
+  max-width: 748px;
+}
+
+.forever-card .price-section .price {
+  color: #FDB056;
+}
+.forever-left {
+  display: flex;
+  flex-direction: column; /* название и цены в столбик */
+  gap: 5px;
+}
+
+
+.forever-description {
+  flex: 1; /* занимает оставшееся место справа */
+  text-align: center;
+  color: white;
+
+}
+.forever-card .forever-description {
+    margin-left: 0;
+    margin-top: 50px;
+    margin-right: 10%;
+  }
+.text{
+  color: #FDB056 !important;
+}
+/* Адаптив */
+@media (max-width: 768px) {
+  /* ====== АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ ====== */
+@media (max-width: 768px) {
+  .tariff-row {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .tariff-card {
+    width: 100%;
+    max-width: none;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .tariff-card .price-section {
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  /* Чтобы текст у "Навсегда" шел вниз */
+  .tariff-card.forever-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tariff-card.forever-card .forever-description {
+    order: 3; /* переносим вниз */
+    margin-top: 10px;
+    text-align: center;
+  }
+  /* Перемещаем скидку в правый верхний угол */
+  .tariff-card .discount {
+    top: 0px;
+    left: auto;
+    right: 30px;
+  }
+  .tariff-card.forever-card .discount {
+    right: 70px;
+  }
+  /* Слегка увеличим шрифт на телефоне */
+  .tariff-card .name {
+    font-size: 1.2rem;
+  }
+
+  .tariff-card .price {
+    font-size: 1.8rem;
+  }
+
+  .tariff-card .old-price {
+    font-size: 1rem;
+  }
+  .timer {
+  font-size: 1.5rem;
+  color: #ffbb00;
+  font-weight: bold;
+}
+
+.timer.warning {
+  color: red;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}
+
+}
+
+}
+
+@media (max-width: 900px) {
+  .content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image-section {
+    order: -1; /* чтобы картинка шла сверху */
+  }
+
+  .image-section img {
+    max-width: 300px;
+  }
+}

@@ -1,103 +1,115 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import TariffsGrid from "../components/TariffsGrid";
+import { Tariff } from "../types/types";
+import "../styles/globals.css";
+
+export default function HomePage() {
+  const [tariffs, setTariffs] = useState<Tariff[]>([]);
+  const [agree, setAgree] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState(2 * 60);
+
+  // Получаем тарифы с API и сортируем
+  useEffect(() => {
+    fetch("https://t-core.fit-hub.pro/Test/GetTariffs")
+      .then(res => res.json())
+      .then((data: Tariff[]) => {
+        const forever = data.filter(t => t.period === "Навсегда");
+        const other = data
+          .filter(t => t.period !== "Навсегда")
+          .sort((a, b) => {
+            const order = ["3 месяца", "1 месяц", "1 неделя"];
+            return order.indexOf(a.period) - order.indexOf(b.period);
+          });
+        const sorted = [...forever, ...other];
+        setTariffs(sorted);
+
+        const best = sorted.find(t => t.is_best);
+        if (best) setSelectedPeriod(best.period);
+      });
+  }, []);
+
+  // Таймер обратного отсчета
+  useEffect(() => {
+    const interval = setInterval(() => setTimeLeft(prev => (prev > 0 ? prev - 1 : 0)), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleBuy = () => {
+    if (!agree) {
+      alert("Сначала согласитесь с условиями");
+      return;
+    }
+    const selectedTariff = tariffs.find(t => t.period === selectedPeriod);
+    if (!selectedTariff) {
+      alert("Выберите тариф для покупки!");
+      return;
+    }
+    alert(`Спасибо за покупку тарифа "${selectedTariff.period}"`);
+  };
+
+  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const seconds = String(timeLeft % 60).padStart(2, "0");
+  const warning = timeLeft <= 30;
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="container">
+      <div className="header">
+        <div>Успейте открыть пробную неделю</div>
+        <div className={`timer ${warning ? "warning" : ""}`}>
+          • {minutes} : {seconds} •
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </div>
+
+      <h2>Выбери подходящий для себя <span className="text">тариф</span></h2>
+
+      <div className="content">
+        <div className="image-section">
+          <img src="/man.png" alt="Мужчина в форме" />
+        </div>
+
+        <div className="right-side">
+          <TariffsGrid
+            tariffs={tariffs}
+            selectedPeriod={selectedPeriod}
+            onSelect={setSelectedPeriod}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+          <div className="benefit-text">
+            <span className="benefit-icon">!</span>
+            Следуя плану на 3 месяца и более, люди получают в 2 раза лучший результат, чем за 1 месяц
+          </div>
+
+          <div className="terms">
+            <div className="checkbox">
+              <input
+                type="checkbox"
+                checked={agree}
+                onChange={e => setAgree(e.target.checked)}
+                id="agree"
+              />
+              <label htmlFor="agree">
+                Я согласен с офертой <u>рекуррентных платежей</u> и <u>Политикой конфиденциальности</u>
+              </label>
+            </div>
+
+            <button className="buy-button" onClick={handleBuy}>
+              Купить
+            </button>
+            <div className="buy-text">Нажимая кнопку «Купить», Пользователь соглашается на разовое списание денежных средств для получения пожизненного доступа к приложению. Пользователь соглашается, что данные кредитной/дебетовой карты будут сохранены для осуществления покупок дополнительных услуг сервиса в случае желания пользователя.</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="refund">
+        <div className="refund-title">Гарантия возврата 30 дней</div>
+        <p>
+          Мы уверены, что наш план сработает для тебя и ты увидишь видимые результаты уже через 4 недели!
+          Мы даже готовы полностью вернуть твои деньги в течение 30 дней с момента покупки, если ты не получите видимых результатов.
+        </p>
+      </div>
     </div>
   );
 }
